@@ -1,76 +1,78 @@
 <!-- DISPLAY POST WRAPPER IN POST PAGE -->
-<?php 	$post_id=get_the_ID();
-		$post_permalink=get_permalink(get_the_ID());
-		$post_title=get_the_title(get_the_ID());
+<?php 	
+		$post_id=get_the_ID();
+		$post_permalink=get_permalink($post_id);
+		$post_title=get_the_title($post_id);
 ?>
 <div class="row story-wrapper postpage-story-wrapper post-page-story-<?php echo $post_id;?>">
 		<div class="story-image" > 
 			<!--  display slide image use with plugin dynamic feature image-->
-			<?php if(has_post_video($post_id)): ?>
+		<?php 
+		if(has_post_video($post_id)): ?>
 				<?php echo get_the_post_video( $post_id, full ); ?>
 				<script type="text/javascript">
-				var iframeWisth=$(".featured-video-plus iframe").width();
-				$(".featured-video-plus iframe").height(iframeWisth*2/3);
+				var iframeWidth=$(".featured-video-plus iframe").width();
+				$(".featured-video-plus iframe").height(iframeWidth*2/3);
 				</script>
-			<?php else:?>
+		<?php else:?>
 			<?php 
 				global $dynamic_featured_image;
 				$feature_image=$dynamic_featured_image->get_featured_images() ;
 				if(!$feature_image==null): ?>		
-				<div class="slide-feature-image slide-feature-image-<?php echo $post_id;?>">	
-				<?php the_post_thumbnail('medium') ?>
-				<?php 
-				foreach ($feature_image as $feature_image) {?>
-					<img src="<?php echo $feature_image['full'];?>">
-				<?php
-				}?>
-				</div>
-				<!-- 			loadscript for slide -->
-			<script type="text/javascript">
-				var slideImageWidth=$(".slide-feature-image-<?php echo $post_id;?>").width();
-				var eindex_<?php echo $post_id;?> = 0;
-				$(".slide-feature-image-<?php echo $post_id;?>").height(slideImageWidth*2/3);
-				var count_<?php echo $post_id;?> = $('.slide-feature-image-<?php echo $post_id;?> img').length;
-				$('.slide-feature-image-<?php echo $post_id;?>').append('<ul class="slide-control"><li id="control-right-<?php echo $post_id;?>" class="fa fa-chevron-right control-button-<?php echo $post_id;?> control-right control-active"></li><li id="control-left-<?php echo $post_id;?>"class="fa fa-chevron-left control-button-<?php echo $post_id;?> control-left"></li></ul>');
-				$('.slide-feature-image-<?php echo $post_id;?>').append('<div class="count-slide count-slide-<?php echo $post_id;?>"></div>');
-				$(".slide-feature-image-<?php echo $post_id;?> img:first-child").addClass("image-focus");
-			    $(".count-slide-<?php echo $post_id;?>").html("<p>"+(eindex_<?php echo $post_id;?>+1)+"/"+count_<?php echo $post_id;?>+"</p>");
-			    if (typeof setimagefocus == "undefined") { 
-			    function setimagefocus(postID,eIndex,count) {
-			        $(".slide-feature-image-"+postID+" img").stop().fadeOut(300).animate({
-			            opacity: 0
-			        });
-			        $(".slide-feature-image-"+postID+" img:eq(" + eIndex + ")").stop().fadeIn(300).animate({
-			            opacity: 1
-			        });
-			        $(".count-slide-"+postID).html("<p>"+(eIndex+1)+"/"+count+"</p>");
-			        if(eIndex==(count-1)){
-			         	$("#control-right-"+postID).removeClass("control-active");
-			         	$("#control-left-"+postID).addClass("control-active");
-			         }
-			        else if(eIndex==0){
-			         	$("#control-left-"+postID).removeClass("control-active");
-			         	$("#control-right-"+postID).addClass("control-active");
-			         }
-			        else if(eIndex==(count-2)|eIndex==1){
-			        	$("#control-left-"+postID+",#control-right-"+postID).addClass("control-active");
-			        }
-			        else{
-			        	;
-			        }
-			    }
-			    }
-			    $("#control-left-<?php echo $post_id;?>").click(function () {
-			        eindex_<?php echo $post_id;?>--;
-			        if (eindex_<?php echo $post_id;?> == -1) eindex_<?php echo $post_id;?> = count_<?php echo $post_id;?> - 1;
-			        setimagefocus(<?php echo $post_id;?>,eindex_<?php echo $post_id;?>,count_<?php echo $post_id;?>);
-			    });
-			    $("#control-right-<?php echo $post_id;?>").click(function () {
-			        eindex_<?php echo $post_id;?>++;
-			        if (eindex_<?php echo $post_id;?> == count_<?php echo $post_id;?>) eindex_<?php echo $post_id;?> = 0;
-			        setimagefocus(<?php echo $post_id;?>,eindex_<?php echo $post_id;?>,count_<?php echo $post_id;?>);
-			    });
-			</script>		
+					<div class="slide-feature-image slide-feature-image-<?php echo $post_id;?>">	
+					<?php the_post_thumbnail('medium') ?>
+					<?php 
+					foreach ($feature_image as $feature_image) {?>
+						<img src="<?php echo $feature_image['full'];?>">
+					<?php
+					}?>
+					</div>	
+				<!-- 			loadscript for slide 	-->
+						<script type="text/javascript">
+							var slideImageWidth=$(".slide-feature-image-<?php echo $post_id;?>").width();
+							var eindex_<?php echo $post_id;?> = 0;
+							$(".slide-feature-image-<?php echo $post_id;?>").height(slideImageWidth*2/3);
+							var count_<?php echo $post_id;?> = $('.slide-feature-image-<?php echo $post_id;?> img').length;
+							$('.slide-feature-image-<?php echo $post_id;?>').append('<ul class="slide-control"><li id="control-right-<?php echo $post_id;?>" class="fa fa-chevron-right control-button-<?php echo $post_id;?> control-right control-active"></li><li id="control-left-<?php echo $post_id;?>"class="fa fa-chevron-left control-button-<?php echo $post_id;?> control-left"></li></ul>');
+							$('.slide-feature-image-<?php echo $post_id;?>').append('<div class="count-slide count-slide-<?php echo $post_id;?>"></div>');
+							$(".slide-feature-image-<?php echo $post_id;?> img:first-child").addClass("image-focus");
+						    $(".count-slide-<?php echo $post_id;?>").html("<p>"+(eindex_<?php echo $post_id;?>+1)+"/"+count_<?php echo $post_id;?>+"</p>");
+						    if (typeof setimagefocus == "undefined") { 
+						    function setimagefocus(postID,eIndex,count) {
+						        $(".slide-feature-image-"+postID+" img").stop().fadeOut(300).animate({
+						            opacity: 0
+						        });
+						        $(".slide-feature-image-"+postID+" img:eq(" + eIndex + ")").stop().fadeIn(300).animate({
+						            opacity: 1
+						        });
+						        $(".count-slide-"+postID).html("<p>"+(eIndex+1)+"/"+count+"</p>");
+						        if(eIndex==(count-1)){
+						         	$("#control-right-"+postID).removeClass("control-active");
+						         	$("#control-left-"+postID).addClass("control-active");
+						         }
+						        else if(eIndex==0){
+						         	$("#control-left-"+postID).removeClass("control-active");
+						         	$("#control-right-"+postID).addClass("control-active");
+						         }
+						        else if(eIndex==(count-2)|eIndex==1){
+						        	$("#control-left-"+postID+",#control-right-"+postID).addClass("control-active");
+						        }
+						        else{
+						        	;
+						        }
+						    }
+						    }
+						    $("#control-left-<?php echo $post_id;?>").click(function () {
+						        eindex_<?php echo $post_id;?>--;
+						        if (eindex_<?php echo $post_id;?> == -1) eindex_<?php echo $post_id;?> = count_<?php echo $post_id;?> - 1;
+						        setimagefocus(<?php echo $post_id;?>,eindex_<?php echo $post_id;?>,count_<?php echo $post_id;?>);
+						    });
+						    $("#control-right-<?php echo $post_id;?>").click(function () {
+						        eindex_<?php echo $post_id;?>++;
+						        if (eindex_<?php echo $post_id;?> == count_<?php echo $post_id;?>) eindex_<?php echo $post_id;?> = 0;
+						        setimagefocus(<?php echo $post_id;?>,eindex_<?php echo $post_id;?>,count_<?php echo $post_id;?>);
+						    });
+						</script>		
 			<?php 
 			else:?>
 			<!-- display video or feature image when not have slide image -->
@@ -95,9 +97,11 @@
 				<?php the_content() ?>
 			</div>
 			<ul class="nav nav-align-right story-infor"><li><strong>Date: </strong><p><?php the_date() ?></p></li><li class="divider">/</li><li><strong>Author: </strong><p><a href="<?php the_author_link() ?>"><?php the_author() ?></a></p></li></ul>
-			<ul class="nav nav-align-right story-infor"><li><strong>Category: </strong><p><?php the_category() ?></p></li><li class="divider">/</li><li><strong>tag: </strong><p><?php the_tags('','','')?></p></li><li class="divider">/</li><li><strong>views: </strong><p><?php echo getPostViews(get_the_ID()); ?></p></li></ul>
-			<p id="story-comment-<?php echo $post_id;?>" class="story-comment" onclick="toggleCommentContent(<?php echo $post_id; ?>,'<?php echo $post_title;?>','<?php echo $post_permalink;?>')" ><a> <span class="disqus-comment-count"  data-role="mobile" data-disqus-url="<?php echo $post_permalink;?>"></span></a></p>
-			<script type="text/javascript" src="https://stylelk.net/wp-content/plugins/disqus-comment-system/media/js/count.js"></script>
+			<ul class="nav nav-align-right story-infor"><li><strong>Category: </strong><p><?php the_category() ?></p></li><li class="divider">/</li><li><strong>tag: </strong><p class="tag-list"><?php the_tags('','','')?></p></li><li class="divider">/</li><li><strong>views: </strong><p><?php echo getPostViews(get_the_ID()); ?></p></li></ul>
+			<p id="story-comment-<?php echo $post_id;?>" class="story-comment" onclick="toggleCommentContent(<?php echo $post_id; ?>,'<?php echo $post_title;?>','<?php echo $post_permalink;?>')" >			
+				<a><span class="disqus-comment-count"  data-role="mobile" data-disqus-url="<?php echo $post_permalink;?>">0 comment</span></a>
+			</p>
+			<!-- <script type="text/javascript" src="http://stylelk.disqus.com/count.js"></script> -->
 			<?php if ( comments_open()) :?>
 				<div id="comments-content-<?php echo $post_id ;?>" class="comments-content">
 					<?php;
@@ -129,7 +133,7 @@
 			        this.page.title = postTitle;
 			      }
 			    });
-			    topPosition=("#comment-content-"+postID).position().top;
+			    topPosition=$("#comment-content-"+postID).position().top;
 			     $('html,body').animate({"scrollTop":topPosition},'slow');
 			/*	var disqus_shortname = "stylelk";
 				var disqus_title = postTitle;

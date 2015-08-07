@@ -1,44 +1,19 @@
-$(window).on("load",function(e){
-			e.preventDefault();
+$(window).on("load",function(){
 			$(".mainmenu-btn").click(function(){
 				$("body").addClass("hidden-overflow");
-				$(".wrapper").animate({left:"-300"},600);
-				$("#fixer-menu").animate({left:"-300"},600);
-				$("#slide_menu").animate({right:"0"},600);
+				$(".wrapper,#fixer-menu,#slide_menu").addClass("slide-to-left");
 				$(".blur-screen").css({"display":"block"});
 			});
 			$(".close-slide").click(function(){
-				$(".hidden-overflow").removeClass("hidden-overflow");
-				$("#slide_menu").animate({right:"-300"},600);
-				$(".wrapper").animate({left:"0"},600);	
-				$("#fixer-menu").animate({left:"0"},600);
+				$("body").removeClass("hidden-overflow");
+				$("#slide_menu,.wrapper,#fixer-menu").removeClass("slide-to-left");
 				$(".blur-screen").css({"display":"none"});		
 			});
 			$(".blur-screen").click(function(){
-				$(".hidden-overflow").removeClass("hidden-overflow");
-				$("#slide_menu").animate({right:"-300"},600);
-				$(".wrapper").animate({left:"0"},600);	
-				$("#fixer-menu").animate({left:"0"},600);
+				$("body").removeClass("hidden-overflow");
+				$("#slide_menu,.wrapper,#fixer-menu").removeClass("slide-to-left");
 				$(".blur-screen").css({"display":"none"});		
 			});
-		/*		$(".mainmenu-btn").click(function(){
-				$("body").addClass("hidden-overflow");
-				$(".wrapper").css({"margin-right":"300px"});
-				$("#slide_menu").css({"right":"0"});
-				$(".blur-screen").css({"display":"block"});
-			});
-			$(".close-slide").click(function(){
-				$(".hidden-overflow").removeClass("hidden-overflow");
-				$("#slide_menu").css({"right":"-300"});
-				$(".wrapper").css({"margin-right":"0"});	
-				$(".blur-screen").css({"display":"none"});		
-			});
-			$(".blur-screen").click(function(){
-				$(".hidden-overflow").removeClass("hidden-overflow");
-				$("#slide_menu").css({right:"-300px"});
-				$(".wrapper").css({"margin-right":"0"});	
-				$(".blur-screen").css({"display":"none"});		
-			});*/
 			/*fadeIn fadeOut searchform*/
 			var i=0;
 			$(".btn-toggle-search").click(function(){
@@ -59,7 +34,7 @@ $(window).on("load",function(e){
 				$(this).children("ul").slideToggle();
 			})
 			/*show link post*/
-});
+})
 /*MENU FIXER*/
 $(window).scroll(function(){
 			if((post_addr==1|post_addr==2)&&($(window).width()>768)){

@@ -16,7 +16,7 @@
                             if ($the_query->have_posts()) : 
                                 while ($the_query->have_posts()): $the_query->the_post();
                                     setup_postdata($post);
-                                    $html.=get_template_part('content','short');
+                                    get_template_part('content','short');
                                 endwhile;
                                  wp_reset_postdata();
                             else:
@@ -27,15 +27,15 @@
                         elseif( is_tag() ) :
                             global $wpdb;
                             global $post;
-                            $tag_slug=single_tag_title( '', false );
+                            $term_id = get_query_var('tag_id');
                             $numpost=10;
                             $curentpost=0;
-                            $args=array('tag'=>$tag_slug,'posts_per_page'=>$numpost,'offset'=>$curentpost);
+                            $args=array('tag_id'=>$term_id,'posts_per_page'=>$numpost,'offset'=>$curentpost);
                             $the_query=new WP_Query($args);
                             if ($the_query->have_posts()) : 
                                 while ($the_query->have_posts()): $the_query->the_post();
                                     setup_postdata($post);
-                                    $html.=get_template_part('content','short');
+                                    get_template_part('content','short');
                                 endwhile;
                                  wp_reset_postdata();
                             else:
@@ -48,6 +48,15 @@
                     </div> <!-- END TABCONTENT -->
                 </div>
                 <div class="col-md-4 visible-md visible-lg right-column newsletter-column">
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-8242009209629639"
+                    data-ad-slot="8776381107"
+                    data-ad-format="auto"></ins>
+                    <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                     <h4><?php _e('follow us')?></h4>
                     <hr>
                     <?php $newsletter=new NewsletterWidget;

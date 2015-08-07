@@ -28,6 +28,7 @@ if(isset($_POST['newsletter-form']))
 	{	
 		$wpdb->update( 'wp_newsletter', array('status'=>'S'), array('email'=>$current_user->user_email));
 	}
+	 redirect_to_page(HOME."/settings/newslette");
 }
 ?>
  	<div class="container body-content">

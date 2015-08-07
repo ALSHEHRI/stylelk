@@ -1,4 +1,5 @@
-<?php define( 'THEME_URL', get_stylesheet_directory() );
+<?php 
+		define( 'THEME_URL', get_stylesheet_directory() );
 		define( 'CORE', THEME_URL . '/core' );
 		define( 'CSS', THEME_URL . '/css' );
 		define( 'JS', THEME_URL . '/js' );
@@ -106,7 +107,7 @@
 	<?php if(is_home()):?> post_addr=1; 
 	<?php elseif(is_category()):?> post_addr=3; cat_id=<?php echo get_cat_id( single_cat_title("",false) ); ?>;
 	<?php elseif(is_single()):?> post_addr=4; post_id=<?php echo get_the_ID()?>;
-	<?php elseif(is_tag()):?> post_addr=5; tag_slug_name=<?php echo single_tag_title( '', false ); ?>;
+	<?php elseif(is_tag()):?> post_addr=5; tag_slug_name=<?php echo get_query_var('tag_id'); ?>;
 	<?php endif;?>
 	</script>
 	<?php
@@ -132,6 +133,15 @@
 	remove_action('wp_head', '_admin_bar_bump_cb');
 	}
 	add_action('get_header', 'remove_admin_login_header');*/
+
+	function add_disqus_sso_script(){
+		echo '<script type="text/rocketscript">
+		var disqus_config = function () {
+		this.page.remote_auth_s3 = "<message> <hmac> <timestamp>";
+		this.page.api_key = "O93zcIPvgt3qLjj4NjmXSOtuMcRaVyos34GY5n9WyQLomv77xU9QhjYzgS2gKhEC";
+		} </script>';
+	};
+	add_action('admin_enqueue_scripts','add_disqus_sso_script');
 	/*ADD WIDGETS*/
 	function stylelk_register_widget(){
 		register_sidebar(array( 
@@ -187,15 +197,24 @@
 	function popularPosts($curentpost,$numpost) {
 	    global $wpdb;
 	    global $post;
-	    $posts = $wpdb->get_results("SELECT $wpdb->posts.ID/*,$wpdb->posts.post_title,$wpdb->posts.comment_count,$wpdb->posts.post_date */ FROM $wpdb->posts INNER JOIN $wpdb->postmeta ON $wpdb->postmeta.post_id=$wpdb->posts.ID WHERE $wpdb->postmeta.meta_key='post_views_count' AND $wpdb->posts.post_type='post'  ORDER BY $wpdb->postmeta.meta_value+0  DESC LIMIT $curentpost, $numpost");	  
-	   	if ( $posts) : 
-			foreach ($posts as $post):
-				setup_postdata($post);
-				$html.=get_template_part('content','short');
-			endforeach;
-				wp_reset_postdata();
-		else:
-			$html='';
+	    $html='';
+	    $args=array(
+					'post_type' => 'post',
+					'post_status'=>'publish',
+					'meta_key'=>'post_views_count',
+					'orderby'=>'meta_value_num',
+					'order'=>'DESC',
+					'offset'=>$curentpost,
+					'posts_per_page'=>$numpost
+					);
+	    $the_query = new WP_Query( $args);
+		if($the_query->have_posts()):
+	            while ($the_query->have_posts()): $the_query->the_post();
+	                setup_postdata($post);
+	                $html.=get_template_part('content','short');
+	                $html.='<script type="text/javascript" src="http://stylelk.disqus.com/count.js">';
+	            endwhile;
+	                wp_reset_postdata();
 		endif;
 		return $html;
 	}
@@ -203,22 +222,31 @@
 	function latestPosts($curentpost,$numpost){
 		global $wpdb;
 		global $post;
-		$posts = $wpdb->get_results("SELECT ID/*,post_title,comment_count,post_date*/ FROM $wpdb->posts WHERE post_type='post' AND post_status='publish' ORDER BY post_date DESC LIMIT $curentpost, $numpost");	  
-		if ( $posts) : 
-			foreach ($posts as $post):
-				setup_postdata($post);
-				$html.=get_template_part('content','short');
-			endforeach;
-				wp_reset_postdata();
-		else:
-			$html='';
-		endif;
+		$html='';
+		$args=array(
+					'post_type' => 'post',
+					'post_status'=>'publish',
+					'orderby'=>'post_date',
+					'order'=>'DESC',
+					'offset'=>$curentpost,
+					'posts_per_page'=>$numpost
+				);
+		$the_query = new WP_Query( $args);
+			if($the_query->have_posts()):
+	                while ($the_query->have_posts()): $the_query->the_post();
+	                	setup_postdata($post);
+	                    $html.=get_template_part('content','short');
+	                    $html.='<script type="text/javascript" src="http://stylelk.disqus.com/count.js">';
+	                endwhile;
+	                wp_reset_postdata();
+			endif;
 		return $html;
 	}
 /*REQUEST STORY FOLLOW CATEGORY*/
 	function categoryPosts($curentpost,$numpost,$categoy_id){
 		global $wpdb;
 		global $post;
+		$html='';
 		$args=array('cat'=>$categoy_id,'posts_per_page'=>$numpost,'offset'=>$curentpost);
 		$the_query=new WP_Query($args);
 		if ($the_query->have_posts()) : 
@@ -227,8 +255,6 @@
 				$html.=get_template_part('content','short');
 			endwhile;
 				wp_reset_postdata();
-		else:
-			$html='';
 		endif;
 		return $html;
 	}
@@ -236,7 +262,8 @@
 function tagPosts($curentpost,$numpost,$tag_slug){
 		global $wpdb;
 		global $post;
-		$args=array('tag'=>$tag_slug,'posts_per_page'=>$numpost,'offset'=>$curentpost);
+		$html='';
+		$args=array('tag_id'=>$tag_slug,'posts_per_page'=>$numpost,'offset'=>$curentpost);
 		$the_query=new WP_Query($args);
 		if ($the_query->have_posts()) : 
 			while ($the_query->have_posts()): $the_query->the_post();
@@ -244,18 +271,20 @@ function tagPosts($curentpost,$numpost,$tag_slug){
 				$html.=get_template_part('content','short');
 			endwhile;
 				wp_reset_postdata();
-		else:
-			$html='';
 		endif;
 		return $html;
 	}
 	function stylelk_request_postpage($currentpost,$numpost,$post_id){
+		global $wpdb;
+		global $post;
+		$html='';
 		$post_id_array=array($post_id);
-		$args=array( 'post_type' => 'post','offset'=>$currentpost,'posts_per_page'=>$numpost,'post__not_in'=>$post_id_array);
+		$args=array( 'post_type' => 'post','offset'=>$currentpost-1,'posts_per_page'=>$numpost,'post__not_in'=>$post_id_array);
 		$the_query = new WP_Query( $args );
 		if($the_query->have_posts()):
 			while ($the_query->have_posts()):$the_query->the_post();
 				$html.=get_template_part( 'content',get_post_format());
+				$html.='<script type="text/javascript" src="http://stylelk.disqus.com/count.js">';
 			endwhile;
 		endif;
 		return $html;
@@ -413,23 +442,7 @@ function redirect_to_page($url=HOME){
 	exit;
 }
 /*template comment list*/
-function comment_list_theme( $comment,$args,$depth) {
-    $GLOBALS['comment'] = $comment;
-    ?>
-   <article class="comment-body">
-   	<div class="comment-wrapper">			
-   		<div class="comment-avatar"><?php echo get_avatar($comment,50);?></div>
-	 	<ul class="comment-infor">
-		 	<li class="comment-author"><?php comment_author(); ?></li>
-		 	<li class="comments-time"><?php echo human_time_diff(get_comment_time('U'),current_time('timestamp')).' ago'; ?></li>	
-	 	</ul>
- 	</div>
- 	<div class="clearfix"></div>
- 	<div class="comment-text"><?php comment_text();?></div>	
-	<div class="comment-reply"><a href="#"><?php _e('Reply'); ?></div>	
-	</article>
-    <?php
-}
+
 add_filter('wp_mail_from', 'new_mail_from');
 add_filter('wp_mail_from_name', 'new_mail_from_name');
 function new_mail_from(){
@@ -438,5 +451,4 @@ function new_mail_from(){
 function new_mail_from_name(){
 	return 'STYLELK';
 }
-
 ?>

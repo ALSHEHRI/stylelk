@@ -15,6 +15,7 @@ $result_status=$result_status['0']->status;
 if(	isset($_POST['userID'])){
 	$user_id=$wpdb->escape(trim($_POST['userID']));
 	$email = $wpdb->escape(trim($_POST['userEmail']));
+	/*die(var_dump($email));*/
 	$displayname = $wpdb->escape(trim($_POST['userDisplayname']));
 	$firstname=$wpdb->escape(trim($_POST['userFirstname']));
 	$lastname=$wpdb->escape(trim($_POST['userLastname']));
@@ -36,10 +37,10 @@ if(	isset($_POST['userID'])){
     }
     else{
     	if((! $newpassword==''&&!$repeatpassword=='')&&( $newpassword==$repeatpassword)){
-		$user_id = wp_update_user( array( 'ID' => $user_id,'user_email' => $email,'user_displayname'=>$displayname,'first_name'=>$firstname,'last_name'=>$lastname ) );
+		$user_id = wp_update_user( array( 'ID' => $user_id,'user_email' => $email,'display_name'=>$displayname,'first_name'=>$firstname,'last_name'=>$lastname,'user_pass'=>$newpassword ) );
     	}
     	else
-    	$user_id = wp_update_user( array( 'ID' => $user_id,'user_email' => $email,'user_displayname'=>$displayname,'first_name'=>$firstname,'last_name'=>$lastname, ) );
+    	$user_id = wp_update_user( array( 'ID' => $user_id,'user_email' => $email,'display_name'=>$displayname,'first_name'=>$firstname,'last_name'=>$lastname) );
     	if(get_user_meta( $user_id,'user_location',true)=='')
     		add_user_meta($user_id,'user_location',$location);
     	else 
@@ -57,30 +58,16 @@ if(	isset($_POST['userID'])){
     	else 
     		update_user_meta($user_id,'birthday_year',$birthday_year);
     	if(is_wp_error( $user_id ) ){
-    		$message="Error Update";
+    		$message="Error";
     	}
     	else{
-    		$message="Update Success";
+    		$message="Success";
     	}
     }
+    redirect_to_page(HOME."/settings/profile?message=".$message);
 }
-if(isset($_POST['newsletter-form']))
-{	
-	if($_POST['newsletter-stylelk']==1)	
-	{	
-		if($result_status==null)
-		{
-			$token=substr(md5(rand()), 0, 10);
-			$wpdb->insert('wp_newsletter',array('email'=>$current_user->user_email,'status'=>'C','token'=>$token));
-		}
-		else if($result_status=='S'){
-			$wpdb->update( 'wp_newsletter', array('status'=>'C'),array( 'email'=>$current_user->user_email));
-		}
-	}
-	else
-	{	
-		$wpdb->update( 'wp_newsletter', array('status'=>'S'), array('email'=>$current_user->user_email));
-	}
+if(isset($_GET['message'])){
+	$message=$_GET['message'];
 }
 ?>
  	<div class="container body-content">

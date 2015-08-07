@@ -7,33 +7,56 @@
 		</ul>
 		<div class="tab-content">
 			<div id="latest-content" class="tab-pane fade in active">
+				
 				<?php 
+				//<!-- WP Query get post follow Date posted -->
 				global $wpdb;
 				global $post;
-				$posts = $wpdb->get_results("SELECT ID/*,post_title,comment_count,post_date*/ FROM $wpdb->posts WHERE post_type='post' AND post_status='publish' ORDER BY post_date DESC LIMIT 0, 10");	  
-				if ($posts) : 
-				 	foreach ($posts as $post) {
-				 		setup_postdata( $post );
-				 		get_template_part('content','short');
-				 	}
-				 	wp_reset_postdata();
-				else:
-					get_template_part('content','none');
-				endif;
+				$args=array(
+					'post_type' => 'post',
+					'post_status'=>'publish',
+					'orderby'=>'post_date',
+					'order'=>'DESC',
+					'posts_per_page'=>10
+					);
+				$the_query = new WP_Query( $args);
+				if($the_query->have_posts()):
+                                while ($the_query->have_posts()): $the_query->the_post();
+                                    setup_postdata($post);
+                                    get_template_part('content','short');
+                                endwhile;
+                                 wp_reset_postdata();
+                else:
+                                ?>
+                        <p> <?php echo _e('Not have post in category'); ?></p>
+                    <?php
+                endif;
 				 ?>
 			</div>
 			<div id="popular-content" class="tab-pane fade in">	
+				
 			<?php	
-				$posts = $wpdb->get_results("SELECT $wpdb->posts.ID/*,$wpdb->posts.post_title,$wpdb->posts.post_date,$wpdb->postmeta.meta_value*/ FROM $wpdb->posts INNER JOIN $wpdb->postmeta ON $wpdb->postmeta.post_id=$wpdb->posts.ID WHERE $wpdb->postmeta.meta_key='post_views_count' AND $wpdb->posts.post_type='post' AND post_status='publish' ORDER BY $wpdb->postmeta.meta_value+0  DESC LIMIT 0, 10");	 
-				if ($posts) : 
-					foreach ($posts as $post) {
-						setup_postdata( $post );
-						get_template_part('content','short');
-					}
-					wp_reset_postdata();
-				else:
-					get_template_part('content','none');
-				endif;
+			//<!-- WP Query get post follow views -->
+			$args=array(
+					'post_type' => 'post',
+					'post_status'=>'publish',
+					'meta_key'=>'post_views_count',
+					'orderby'=>'meta_value_num',
+					'order'=>'DESC',
+					'posts_per_page'=>10
+					);
+			$the_query = new WP_Query( $args);
+				if($the_query->have_posts()):
+                                while ($the_query->have_posts()): $the_query->the_post();
+                                    setup_postdata($post);
+                                    get_template_part('content','short');
+                                endwhile;
+                                 wp_reset_postdata();
+                else:
+                                ?>
+                        <p> <?php echo _e('Not have post Populartes'); ?></p>
+                    <?php
+                endif;
 			?>	
 			</div>
 		</div> <!-- END TABCONTENT -->
@@ -51,6 +74,7 @@
 		<h4><?php _e('follow us')?></h4>
 		<hr>
 		<?php
+		// newsletter form
 			$newsletter=new NewsletterWidget;
 			$widget_form=$newsletter->get_widget_form();
 			echo $widget_form;  

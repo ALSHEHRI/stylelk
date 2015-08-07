@@ -51,7 +51,7 @@
 					<li class="visible-small mainmenu-btn"><img src="<?php echo get_template_directory_uri();?>/images/slide-menu.svg" alt="slide button"></li>
 					<li class="visible-small logo"><a href="<?php echo HOME;?>"><img src="<?php echo esc_url(get_theme_mod( 'stylelk_logo')); ?>" alt="Stylelk"></a></li>
 				</ul>
-				<?php wp_nav_menu( array( 'theme_location' => 'short_categories_menu_top', 'container' =>false, 'menu_class' => "nav pull-right")); ?>
+				<?php wp_nav_menu( array( 'theme_location' => 'short_categories_menu_top', 'container' =>false, 'menu_class' => "nav pull-right menu-categories")); ?>
 				<ul class="nav nav-pills pull-right hidden-xs menu-social">
 					<li><a href="<?php echo (get_option('qs_contact_facebook')); ?>" target="_blank"><span class="fa fa-facebook" ></span></a></li>
 					<li><a href="<?php echo (get_option('qs_contact_twitter')); ?>" target="_blank"><span class="fa fa-twitter"></span></a></li>
@@ -65,7 +65,7 @@
 						if( is_user_logged_in()):
 							?>
 						<ul class="nav nav-pills pull-left hidden-xs user-menu">
-							<li class="menu-item-has-children"><a ><span class="fa fa-user"></span> <b><?php global  $current_user; echo $current_user->user_firstname ; ?></b></a>
+							<li class="menu-item-has-children"><a ><span class="fa fa-user"></span> <b><?php global  $current_user; echo $current_user->display_name ; ?></b></a>
 								<ul class="sub-menu">
 									<?php wp_nav_menu( array( 'theme_location' => 'accountpage_menu', 'container' =>false, 'menu_class' => false) ); ?>
 									<li><a href="<?php echo wp_logout_url(HOME); ?>"><?php _e('Logout') ?></a></li>
@@ -94,7 +94,7 @@
 						<?php endif;?>
 					</ul>
 					<?php if(!is_home()):?>
-					<?php wp_nav_menu( array( 'theme_location' => 'short_categories_menu_top', 'container' =>false, 'menu_class' => "nav pull-right hidden-xs hidden-sm menu-short-categories-top")); ?>
+					<?php wp_nav_menu( array( 'theme_location' => 'short_categories_menu_top', 'container' =>false, 'menu_class' => "nav pull-right hidden-xs hidden-sm  menu-categories menu-short-categories-top")); ?>
 					<?php endif;?>
 					<ul class="nav nav-pills pull-right hidden-xs menu-social">
 						<li><a href="<?php echo (get_option('qs_contact_facebook')); ?>" target="_blank"><span class="fa fa-facebook" ></span></a></li>
@@ -111,7 +111,7 @@
 					if( is_user_logged_in()):
 						?>
 					<ul class="nav nav-pills pull-left hidden-xs user-menu">
-						<li class="menu-item-has-children"><a><span class="fa fa-user"></span> <b><?php global  $current_user; echo $current_user->user_firstname ; ?></b></a>
+						<li class="menu-item-has-children"><a><span class="fa fa-user"></span> <b><?php global  $current_user; echo $current_user->display_name ; ?></b></a>
 							<ul class="sub-menu">
 								<?php wp_nav_menu( array( 'theme_location' => 'accountpage_menu', 'container' =>false, 'menu_class' => false) ); ?>
 								<li><a href="<?php echo wp_logout_url(HOME); ?>"><?php _e('Logout') ?></a></li>
@@ -138,7 +138,7 @@
 			<?php endif; ?>
 			<?php if(is_home()): ?>
 			<nav id="main-menu" class="navbar navbar-default hidden-xs"><!-- MAIN MENU -->
-				<?php wp_nav_menu( array( 'theme_location' => 'short_categories_menu', 'container' =>false, 'menu_class' => 'nav') ); ?>
+				<?php wp_nav_menu( array( 'theme_location' => 'short_categories_menu', 'container' =>false, 'menu_class' => 'nav menu-categories') ); ?>
 			</nav>	
 			<?php endif; ?>
 		</header>
